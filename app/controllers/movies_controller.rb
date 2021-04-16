@@ -11,6 +11,8 @@ class MoviesController < ApplicationController
     @movies = Movie.with_ratings(ratings_list, sort_by)
     @ratings_to_show = ratings_hash
     @sort_by = sort_by
+    session['ratings'] = ratings_list
+    session['sort_by'] = @sort_by
   end
 
   def new
@@ -44,7 +46,7 @@ class MoviesController < ApplicationController
   private
   
   def ratings_list
-    params[:ratings]&.keys || Movie.all_ratings
+    params[:ratings]&.keys || session[:ratings] || Movie.all_ratings
   end
   
   def ratings_hash
@@ -52,7 +54,7 @@ class MoviesController < ApplicationController
   end
   
   def sort_by
-    params[:sort_by] || 'id'
+    params[:sort_by] || session[:sort_by] || 'id'
   end
   
   # Making "internal" methods private is not required, but is a common practice.
